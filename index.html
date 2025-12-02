@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoxPvPMC - Rank Market</title>
+    <link rel="stylesheet" href="public/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="public/images/server-icon.jpg" alt="BoxPvPMC" class="logo-img">
+                <h1 class="logo">BOXPVPMC</h1>
+            </div>
+            <nav class="nav">
+                <a href="#ranks" class="nav-link">Ranks</a>
+                <a href="#helper" class="nav-link">Helper</a>
+                <a href="#rules" class="nav-link">Rules</a>
+                <a href="#discord" class="nav-link">Discord</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2 class="hero-title">💎 BOXPVPMC RANK MARKET</h2>
+            <p class="hero-subtitle">Mua rank để nhận khu mine riêng, kit siêu VIP, và quyền lực đặc biệt!</p>
+            <a href="https://discord.gg/BoxPvPMC" target="_blank" class="discord-btn">
+                <span class="discord-icon">💬</span>
+                Join Discord Server
+            </a>
+        </div>
+    </section>
+
+    <!-- Ranks Section -->
+    <section id="ranks" class="ranks-section">
+        <div class="container">
+            <h2 class="section-title">💠 Các Gói Rank Hiện Có</h2>
+            <p class="section-subtitle">Chọn gói rank phù hợp với bạn</p>
+
+            <div class="ranks-grid">
+                <!-- VIP Rank -->
+                <div class="rank-card vip-card" data-rank="vip">
+                    <div class="rank-badge vip-badge">VIP</div>
+                    <div class="rank-icon">💎</div>
+                    <h3 class="rank-name">VIP</h3>
+                    <p class="rank-price">50.000đ</p>
+                    <div class="boost-price">💫 2 Booster</div>
+                    <ul class="rank-features">
+                        <li>✨ Khu Mine VIP riêng – tài nguyên nhiều hơn 🪓</li>
+                        <li>📦 /kit vip – Set giáp + công cụ xịn</li>
+                        <li>🕊️ /fly – Bay thoải mái quanh khu của mình</li>
+                        <li>💬 Tag VIP nổi bật trong chat & tab</li>
+                    </ul>
+                    <button class="buy-btn" onclick="buyRank('VIP', '50.000đ')">Mua Ngay</button>
+                </div>
+
+                <!-- MVP Rank -->
+                <div class="rank-card mvp-card featured" data-rank="mvp">
+                    <div class="rank-badge mvp-badge">MVP</div>
+                    <div class="popular-tag">PHỔ BIẾN</div>
+                    <div class="rank-icon">💠</div>
+                    <h3 class="rank-name">MVP</h3>
+                    <p class="rank-price">100.000đ</p>
+                    <div class="boost-price">🚀 4 Booster</div>
+                    <ul class="rank-features">
+                        <li>⚡ Bao gồm toàn bộ quyền của VIP</li>
+                        <li>🏔️ Khu Mine MVP riêng (có nhiều block quý hơn)</li>
+                        <li>⚔️ /kit mvp – Đồ mạnh hơn, có hiệu ứng buff</li>
+                        <li>💚 /heal & /feed – Hồi máu và no đói nhanh</li>
+                        <li>✨ Danh hiệu MVP rực rỡ trong tab</li>
+                    </ul>
+                    <button class="buy-btn" onclick="buyRank('MVP', '100.000đ')">Mua Ngay</button>
+                </div>
+
+                <!-- GOD Rank -->
+                <div class="rank-card god-card" data-rank="god">
+                    <div class="rank-badge god-badge">GOD</div>
+                    <div class="rank-icon">💥</div>
+                    <h3 class="rank-name">GOD</h3>
+                    <p class="rank-price">250.000đ</p>
+                    <div class="boost-price">⚡ 6 Booster</div>
+                    <ul class="rank-features">
+                        <li>🔥 Bao gồm quyền của MVP</li>
+                        <li>💎 Khu Mine GOD riêng (nhiều kim cương & emerald)</li>
+                        <li>⚔️ /kit god – Trang bị siêu cấp</li>
+                        <li>✏️ /nick – Đổi tên hiển thị</li>
+                        <li>✨ Hiệu ứng phát sáng + tag GOD quyền năng</li>
+                    </ul>
+                    <button class="buy-btn" onclick="buyRank('GOD', '250.000đ')">Mua Ngay</button>
+                </div>
+
+                <!-- KING Rank -->
+                <div class="rank-card king-card premium" data-rank="king">
+                    <div class="rank-badge king-badge">KING</div>
+                    <div class="popular-tag king-tag">VIP NHẤT</div>
+                    <div class="rank-icon">👑</div>
+                    <h3 class="rank-name">KING</h3>
+                    <p class="rank-price">300.000đ</p>
+                    <div class="boost-price">👑 8 Booster</div>
+                    <ul class="rank-features">
+                        <li>💫 Bao gồm quyền của GOD</li>
+                        <li>🏰 Khu Mine KING riêng (đặc biệt chỉ cho top rank)</li>
+                        <li>⚔️ /kit king – Đồ "full enchant" cực mạnh</li>
+                        <li>👻 /vanish – Ẩn danh hoàn toàn</li>
+                        <li>🔧 /repair all – Sửa tất cả đồ</li>
+                        <li>👑 Tag KING uy quyền tối thượng</li>
+                    </ul>
+                    <button class="buy-btn" onclick="buyRank('KING', '300.000đ')">Mua Ngay</button>
+                </div>
+
+                <!-- QUEEN Rank -->
+                <div class="rank-card queen-card special" data-rank="queen">
+                    <div class="rank-badge queen-badge">QUEEN</div>
+                    <div class="popular-tag queen-tag">DÀNH CHO NỮ</div>
+                    <div class="rank-icon">💖</div>
+                    <h3 class="rank-name">QUEEN</h3>
+                    <p class="rank-price">100.000đ</p>
+                    <div class="boost-price">🌸 4 Booster</div>
+                    <ul class="rank-features">
+                        <li>🌸 Khu Mine QUEEN riêng – thiết kế đẹp, dễ farm 💕</li>
+                        <li>👗 /kit queen – Set đồ riêng dành cho nữ</li>
+                        <li>🕊️ /fly, /heal, /feed đầy đủ</li>
+                        <li>💖 Hiệu ứng tim hồng + tag QUEEN</li>
+                    </ul>
+                    <button class="buy-btn" onclick="buyRank('QUEEN', '100.000đ')">Mua Ngay</button>
+                </div>
+            </div>
+
+            <!-- Booster Info -->
+            <div class="boost-info">
+                <h3>📢 Giá Thị Trường Booster</h3>
+                <p>Vì server cần booster, bạn có thể mua rank bằng Discord Booster:</p>
+                <div class="boost-list">
+                    <div class="boost-item">2 Booster = VIP</div>
+                    <div class="boost-item">4 Booster = MVP</div>
+                    <div class="boost-item">6 Booster = GOD</div>
+                    <div class="boost-item">8 Booster = KING</div>
+                    <div class="boost-item">10+ Booster = Thương lượng</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Helper Application -->
+    <section id="helper" class="helper-section">
+        <div class="container">
+            <h2 class="section-title">🛡️ ĐIỀU KIỆN HELPER</h2>
+            <p class="section-subtitle">Gia nhập đội ngũ staff của chúng tôi</p>
+
+            <div class="helper-card">
+                <div class="helper-icon">🛡️</div>
+                <h3>Đăng Ký Vị Trí HELPER</h3>
+
+                <div class="helper-form-guide">
+                    <div class="form-item">
+                        <strong>Tên:</strong>
+                        <p>Ví dụ: Em Tên Là Nguyễn Phú Vinh</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Tuổi:</strong>
+                        <p>Ví dụ: Em 2k10 hoặc là 2010</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Ingame:</strong>
+                        <p>Ví dụ: BummLove</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Team ai:</strong>
+                        <p>Ví dụ: Team của Nguyễn Phú Vinh</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Thời gian chơi game:</strong>
+                        <p>Ví dụ: 6h/day hoặc 2h/d</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Biết làm gì cho server:</strong>
+                        <p>Ví dụ: Đóng góp cho server phát triển hơn nữa</p>
+                    </div>
+
+                    <div class="form-item">
+                        <strong>Mục đích:</strong>
+                        <p>Ví dụ: Đến vì cảm thấy mình có ích</p>
+                    </div>
+                </div>
+
+                <div class="helper-benefits">
+                    <h4>Quyền lợi HELPER:</h4>
+                    <ul>
+                        <li>🛡️ Moderate chat</li>
+                        <li>💬 Help members</li>
+                        <li>⚙️ Basic commands</li>
+                        <li>👥 Staff chat access</li>
+                    </ul>
+                </div>
+
+                <button class="apply-btn" onclick="applyHelper()">
+                    Liên Hệ @trandangkhoavn Để Khảo Sát
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules Section -->
+    <section id="rules" class="rules-section">
+        <div class="container">
+            <h2 class="section-title">📜 NỘI QUY BOXPVPMC & DISCORD</h2>
+
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <div class="rule-number">1</div>
+                    <h3>🚫 Cấm Mod</h3>
+                    <p>Cấm sử dụng các loại mod như: Minimap, Freecam, Click Crystal, Autototem, Swing và các mod tương tự từ server khác.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">2</div>
+                    <h3>🤝 Tôn Trọng</h3>
+                    <p>Tôn trọng Staff, cấm toxic, cấm phân biệt đối xử và tuân thủ các quy tắc khác của server.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">3</div>
+                    <h3>💳 Nạp Rank</h3>
+                    <p>Ai muốn nạp rank thì liên hệ: @trandangkhoavn để được hỗ trợ thanh toán.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">4</div>
+                    <h3>🎮 Cấm Cheat</h3>
+                    <p>Cấm sử dụng Cheat và Mod (như đã nêu ở luật số 1). Vi phạm sẽ bị ban vĩnh viễn.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">5</div>
+                    <h3>🔒 Cấm Bug/Dupe</h3>
+                    <p>Cấm bug, dupe vật phẩm. Nghiêm cấm scam đồ trong server.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">6</div>
+                    <h3>🔞 Nội Dung</h3>
+                    <p>Cấm gửi hình ảnh 18+, nội dung không phù hợp với cộng đồng.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">7</div>
+                    <h3>📋 Back Đồ</h3>
+                    <p>Muốn back đồ, hãy gửi log kèm replay khi chết để staff xem xét.</p>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-number">8</div>
+                    <h3>⚠️ Lỗi PB</h3>
+                    <p>Ai chơi PB mà lạm dụng lỗi vô web, bay, xuyên tường sẽ bị ban.</p>
+                </div>
+
+                <div class="rule-card important">
+                    <div class="rule-number">⚠️</div>
+                    <h3>👑 Staff Rules</h3>
+                    <p>Role có quyền mute, ban, kick, timeout: Cấm vô ý thức, mất trật tự, spam bot không đúng chỗ.</p>
+                    <p><strong>Warning 10 lần = Demote role.</strong></p>
+                    <p>Muốn mute/timeout ai đó phải có bằng chứng hoặc video.</p>
+                </div>
+
+                <div class="rule-card critical">
+                    <div class="rule-number">✅</div>
+                    <h3>🔴 QUAN TRỌNG NHẤT</h3>
+                    <p><strong>CẤM LỢI DỤNG QUYỀN BAN NGƯỜI KHÁC!</strong></p>
+                    <p>Vi phạm sẽ bị xử lý nghiêm khắc.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discord CTA -->
+    <section id="discord" class="discord-section">
+        <div class="container">
+            <h2 class="section-title">Tham Gia Cộng Đồng</h2>
+            <p class="discord-text">Join Discord server để nhận hỗ trợ, mua rank và cập nhật mới nhất!</p>
+            <a href="https://discord.gg/BoxPvPMC" target="_blank" class="discord-btn-large">
+                <span class="discord-icon-large">💬</span>
+                <span>Join Discord: discord.gg/BoxPvPMC</span>
+            </a>
+            <div class="contact-info">
+                <p>💬 Liên hệ hỗ trợ: <strong>@trandangkhoavn</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 BoxPvPMC Network. All rights reserved.</p>
+            <p>Made with 💚 for the community</p>
+        </div>
+    </footer>
+
+    <script src="public/js/main.js"></script>
+</body>
+</html>
