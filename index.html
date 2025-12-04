@@ -1,309 +1,1912 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BoxPvPMC - Rank Market</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BoxPvPMC.Fun | PvP Practice & Minigames</title>
+  <style>
+    /* =====================
+       FONT MINECRAFT STYLE
+       ===================== */
+    @font-face {
+      font-family: "Minecart";
+      src: url("fonts/Minecart.ttf") format("truetype");
+      font-display: swap;
+    }
+
+    :root {
+      --bg-main: #020814;
+      --bg-secondary: #050f20;
+      --bg-elevated: rgba(7, 18, 36, 0.96);
+      --bg-card: rgba(6, 16, 32, 0.98);
+      --text-main: #f5f7ff;
+      --text-muted: #a6b0cf;
+      --accent: #46d96f;
+      --accent-soft: rgba(70, 217, 111, 0.16);
+      --accent-strong: #3bb45d;
+      --border-soft: rgba(148, 163, 184, 0.26);
+      --danger: #ff5b6c;
+      --warning: #ffcc4b;
+      --info: #46b6ff;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.7);
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-full: 999px;
+      --transition-fast: 180ms ease-out;
+      --transition-normal: 240ms ease-out;
+      --nav-height: 70px;
+      --glass-blur: 18px;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      --font-mc: "Minecart", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    html[data-theme="light"] {
+      --bg-main: #f4f6fb;
+      --bg-secondary: #dde3f4;
+      --bg-elevated: rgba(255, 255, 255, 0.98);
+      --bg-card: rgba(255, 255, 255, 0.98);
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-soft: rgba(15, 23, 42, 0.12);
+      --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #0d233d 0, #020814 55%, #00040b 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -100px;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 100%, rgba(70, 217, 111, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(70, 182, 255, 0.16), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* =====================
+       PRELOADER
+       ===================== */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #040c1a 0, #00040b 65%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loader-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .loader-title {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .loader-cube {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: cube-rotate 1.2s linear infinite;
+    }
+
+    .loader-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #46d96f, #2ea855);
+      box-shadow: 0 0 12px rgba(70, 217, 111, 0.65);
+      transform-origin: center;
+      opacity: 0.9;
+    }
+
+    .loader-face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
+    .loader-face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
+    .loader-face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
+    .loader-face:nth-child(4) { transform: rotateY(270deg) translateZ(20px); }
+    .loader-face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
+    .loader-face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
+
+    @keyframes cube-rotate {
+      0% { transform: rotateX(-30deg) rotateY(0deg); }
+      100% { transform: rotateX(-30deg) rotateY(360deg); }
+    }
+
+    /* =====================
+       LAYOUT
+       ===================== */
+    .page-shell {
+      max-width: 1240px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 18px 80px;
+      flex: 1;
+    }
+
+    header {
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px 6px 6px;
+      backdrop-filter: blur(var(--glass-blur));
+      background: linear-gradient(
+        135deg,
+        rgba(1, 8, 20, 0.96),
+        rgba(3, 16, 36, 0.96)
+      );
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .server-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: radial-gradient(circle at 0 0, #46d96f33, transparent 55%);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mc);
+    }
+
+    .server-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #46d96f);
+      box-shadow: 0 0 12px rgba(70, 217, 111, 0.9);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(3, 12, 24, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+    }
+
+    .nav-link {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      position: relative;
+      transition: color var(--transition-fast), transform var(--transition-fast);
+      font-family: var(--font-mc);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #46d96f33, #46b6ff33);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity var(--transition-normal), transform var(--transition-normal);
+      z-index: -1;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .nav-link.active::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      padding: 5px 11px;
+      background: rgba(2, 10, 22, 0.9);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .theme-toggle:hover {
+      background: rgba(10, 24, 48, 0.98);
+      border-color: rgba(148, 163, 184, 1);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+    }
+
+    .logo-clickable {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px 6px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: linear-gradient(
+        145deg,
+        rgba(34, 212, 93, 0.22),
+        rgba(4, 13, 30, 0.96)
+      );
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal),
+        border-color var(--transition-fast);
+    }
+
+    .logo-clickable:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.95);
+      border-color: #46d96fdd;
+    }
+
+    .logo-block {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, #46d96f, #2ea855);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.6),
+        0 10px 16px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-block::before {
+      content: "";
+      position: absolute;
+      inset: 18% 18%;
+      border-radius: 4px;
+      background:
+        linear-gradient(145deg, #1c7b35, #145827);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+    }
+
+    .logo-title {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      font-family: var(--font-mc);
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* =====================
+       SECTIONS
+       ===================== */
+    main {
+      margin-top: 18px;
+    }
+
+    .section {
+      display: none;
+      animation: fade-in 260ms ease-out;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-wrap: wrap;
+        gap: 8px;
+        height: auto;
+      }
+    }
+
+    .panel {
+      padding: 18px 18px 20px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(70, 217, 111, 0.13), transparent 45%),
+        radial-gradient(circle at 100% 0, rgba(70, 182, 255, 0.13), transparent 45%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tagline {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-family: var(--font-mc);
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 3.1vw, 32px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      font-family: var(--font-mc);
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #46d96f, #46b6ff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin-bottom: 14px;
+    }
+
+    .hero-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .pill {
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(3, 12, 24, 0.9);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, #46b6ff, #1d74d1);
+      box-shadow: 0 0 7px rgba(70, 182, 255, 0.9);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal),
+        background var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast);
+      text-decoration: none;
+      font-family: var(--font-main);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #46d96f, #2ea855);
+      color: #020309;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.8),
+        0 14px 30px rgba(0, 0, 0, 0.9);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.9),
+        0 20px 40px rgba(0, 0, 0, 0.95);
+    }
+
+    .btn-ghost {
+      background: rgba(2, 12, 26, 0.96);
+      color: var(--text-main);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(11, 23, 46, 0.98);
+      border-color: rgba(148, 163, 184, 1);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .info-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .info-card {
+      padding: 10px 11px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-family: var(--font-mc);
+    }
+
+    .info-card-main {
+      font-size: 14px;
+      color: var(--text-main);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .info-card-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .info-card-accent {
+      position: absolute;
+      inset: auto auto 0 0;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, #46d96f, transparent);
+      opacity: 0.8;
+    }
+
+    /* STORE */
+    .store-header {
+      margin-bottom: 16px;
+    }
+
+    .store-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-family: var(--font-mc);
+    }
+
+    .store-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 640px;
+    }
+
+    .rank-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .rank-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .rank-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .rank-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .rank-card {
+      padding: 14px 13px 13px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, rgba(70, 217, 111, 0.15), transparent 55%),
+                  var(--bg-card);
+      border: 1px solid rgba(148, 163, 184, 0.85);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(4, 9, 20, 0.92);
+      font-family: var(--font-mc);
+    }
+
+    .rank-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-family: var(--font-mc);
+    }
+
+    .rank-price {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .rank-list {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin: 3px 0 6px;
+    }
+
+    .rank-accent-strip {
+      position: absolute;
+      inset: auto -40% -26px auto;
+      width: 100%;
+      height: 46px;
+      background:
+        linear-gradient(110deg, rgba(70, 217, 111, 0.35), transparent 70%);
+      transform: skewX(-20deg);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* DISCORD */
+    .discord-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.9fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .discord-panel {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .discord-block {
+      padding: 16px 16px 18px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 0 0, rgba(70, 182, 255, 0.18), transparent 55%),
+                  var(--bg-elevated);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .discord-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-family: var(--font-mc);
+    }
+
+    .discord-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      max-width: 520px;
+    }
+
+    .discord-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .discord-stat {
+      padding: 7px 11px;
+      border-radius: var(--radius-md);
+      background: rgba(2, 12, 26, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      font-size: 12px;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .discord-preview {
+      height: 180px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background:
+        linear-gradient(145deg, rgba(4, 11, 26, 0.98), rgba(4, 11, 26, 0.98)),
+        radial-gradient(circle at 0 0, rgba(70, 182, 255, 0.4), transparent 40%);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .discord-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .discord-server-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .discord-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #46d96f);
+      box-shadow: 0 0 10px rgba(70, 217, 111, 0.9);
+    }
+
+    .discord-preview-body {
+      flex: 1;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* ONLINE */
+    .online-wrapper {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .online-wrapper {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .online-main-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-family: var(--font-mc);
+    }
+
+    .online-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      max-width: 520px;
+    }
+
+    .online-placeholder {
+      border-radius: var(--radius-lg);
+      border: 1px dashed rgba(148, 163, 184, 0.9);
+      padding: 18px 16px;
+      background: rgba(2, 12, 26, 0.96);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .online-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .online-stat-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+      background: var(--bg-card);
+      padding: 10px 11px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* PARTNER */
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 1000px) {
+      .partner-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .partner-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .partner-card {
+      padding: 12px 12px 13px;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at top, rgba(70, 182, 255, 0.18), transparent 60%),
+                  var(--bg-card);
+      border: 1px solid rgba(148, 163, 184, 0.85);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .partner-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      object-fit: cover;
+      background: #020617;
+      flex-shrink: 0;
+    }
+
+    .partner-main-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .partner-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      margin-bottom: 5px;
+    }
+
+    /* RULES */
+    .rules-list {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .rules-list li {
+      margin-left: 14px;
+    }
+
+    /* FOOTER + FLOATING */
+    footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      margin-top: 30px;
+      padding-top: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left,
+    .footer-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .footer-strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* FEEDBACK WIDGET */
+    .feedback-widget {
+      position: fixed;
+      right: 18px;
+      bottom: 24px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .feedback-toggle {
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.85);
+      background: radial-gradient(circle at 0 0, rgba(70, 182, 255, 0.22), transparent 60%),
+                  rgba(4, 13, 26, 0.98);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal),
+        border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .feedback-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.95);
+      border-color: rgba(148, 163, 184, 1);
+    }
+
+    .feedback-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .feedback-main {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .feedback-form {
+      width: 280px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(2, 10, 22, 0.98);
+      box-shadow: var(--shadow-soft);
+      padding: 10px 12px 11px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .feedback-form.open {
+      display: flex;
+    }
+
+    .feedback-input,
+    .feedback-textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(2, 10, 24, 0.96);
+      color: var(--text-main);
+      padding: 6px 9px;
+      font-size: 12px;
+      outline: none;
+      resize: vertical;
+      min-height: 0;
+    }
+
+    .feedback-input:focus,
+    .feedback-textarea:focus {
+      border-color: #46b6ff;
+    }
+
+    .feedback-textarea {
+      min-height: 70px;
+      max-height: 160px;
+    }
+
+    .feedback-trap {
+      display: none;
+    }
+
+    .feedback-status {
+      font-size: 11px;
+      color: var(--text-muted);
+      min-height: 14px;
+    }
+
+    /* FLOAT DISCORD BUTTON */
+    .discord-float {
+      position: fixed;
+      left: 18px;
+      bottom: 24px;
+      z-index: 40;
+      border-radius: 999px;
+      padding: 8px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(4, 13, 26, 0.98);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      box-shadow: var(--shadow-soft);
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal),
+        border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .discord-float:hover {
+      transform: translateY(-2px);
+      background: rgba(7, 18, 36, 1);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.95);
+      border-color: rgba(148, 163, 184, 1);
+    }
+
+    .tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: var(--text-muted);
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo-container">
-                <img src="public/images/server-icon.jpg" alt="BoxPvPMC" class="logo-img">
-                <h1 class="logo">BOXPVPMC</h1>
-            </div>
-            <nav class="nav">
-                <a href="#ranks" class="nav-link">Ranks</a>
-                <a href="#helper" class="nav-link">Helper</a>
-                <a href="#rules" class="nav-link">Rules</a>
-                <a href="#discord" class="nav-link">Discord</a>
-            </nav>
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="loader-wrapper">
+      <div class="loader-cube">
+        <div class="loader-face"></div>
+        <div class="loader-face"></div>
+        <div class="loader-face"></div>
+        <div class="loader-face"></div>
+        <div class="loader-face"></div>
+        <div class="loader-face"></div>
+      </div>
+      <div class="loader-title">Đang tải BoxPvPMC.Fun</div>
+    </div>
+  </div>
+
+  <div class="page-shell">
+    <!-- HEADER -->
+    <header>
+      <div class="nav-left">
+        <div class="server-badge">
+          <span class="server-badge-dot"></span>
+          BoxPvPMC.Fun • PvP Practice
         </div>
+      </div>
+
+      <nav>
+        <button class="nav-link active" data-section="server-info">Server Info</button>
+        <button class="nav-link" data-section="store">Store</button>
+        <button class="nav-link" data-section="discord">Discord</button>
+        <button class="nav-link" data-section="partner">Partner</button>
+        <button class="nav-link" data-section="online">Online</button>
+      </nav>
+
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle">
+          <span class="theme-toggle-icon">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="5" fill="#fbbf24"></circle>
+              <g stroke="#fbbf24" stroke-width="1.4" stroke-linecap="round">
+                <line x1="12" y1="2" x2="12" y2="4"></line>
+                <line x1="12" y1="20" x2="12" y2="22"></line>
+                <line x1="4" y1="12" x2="2" y2="12"></line>
+                <line x1="22" y1="12" x2="20" y2="12"></line>
+                <line x1="5" y1="5" x2="3.7" y2="3.7"></line>
+                <line x1="18.3" y1="18.3" x2="19.6" y2="19.6"></line>
+                <line x1="18.3" y1="5" x2="19.6" y2="3.7"></line>
+                <line x1="5" y1="18.3" x2="3.7" y2="19.6"></line>
+              </g>
+            </svg>
+          </span>
+          <span>Theme</span>
+        </button>
+
+        <!-- LOGO HOME -->
+        <div class="logo-clickable" id="logoHome">
+          <div class="logo-block"></div>
+          <div>
+            <div class="logo-title">BOXPVP</div>
+            <div class="logo-sub">Minecraft Network</div>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h2 class="hero-title">💎 BOXPVPMC RANK MARKET</h2>
-            <p class="hero-subtitle">Mua rank để nhận khu mine riêng, kit siêu VIP, và quyền lực đặc biệt!</p>
-            <a href="https://discord.gg/BoxPvPMC" target="_blank" class="discord-btn">
-                <span class="discord-icon">💬</span>
-                Join Discord Server
-            </a>
-        </div>
-    </section>
+    <main>
+      <!-- SERVER INFO -->
+      <section id="server-info" class="section active">
+        <div class="hero-grid">
+          <div class="panel">
+            <div class="panel-inner">
+              <div class="tagline">Giới thiệu máy chủ</div>
+              <h1 class="hero-title">
+                BoxPvPMC.Fun<br>
+                <span>Thế giới PvP luyện tập đỉnh cao</span>
+              </h1>
+              <p class="hero-sub">
+                BoxPvPMC.Fun là máy chủ Minecraft tập trung vào PvP, Practice và Minigames,
+                được tối ưu cho hit reg mượt, không delay và cảm giác combat chân thật.
+                Đây là sân đấu nơi bạn rèn kỹ năng, giao lưu cộng đồng và khẳng định trình độ.
+              </p>
+              <p class="hero-sub">
+                Hệ thống box và kit được tùy chỉnh độc quyền, cân bằng kỹ càng để bạn thoải mái
+                luyện combo, test lối đánh và tryhard cùng bạn bè. Cộng đồng thân thiện,
+                mini-event và giải đấu nhỏ xuất hiện thường xuyên để bạn luôn có thứ để cày.
+              </p>
 
-    <!-- Ranks Section -->
-    <section id="ranks" class="ranks-section">
-        <div class="container">
-            <h2 class="section-title">💠 Các Gói Rank Hiện Có</h2>
-            <p class="section-subtitle">Chọn gói rank phù hợp với bạn</p>
-
-            <div class="ranks-grid">
-                <!-- VIP Rank -->
-                <div class="rank-card vip-card" data-rank="vip">
-                    <div class="rank-badge vip-badge">VIP</div>
-                    <div class="rank-icon">💎</div>
-                    <h3 class="rank-name">VIP</h3>
-                    <p class="rank-price">50.000đ</p>
-                    <div class="boost-price">💫 2 Booster</div>
-                    <ul class="rank-features">
-                        <li>✨ Khu Mine VIP riêng – tài nguyên nhiều hơn 🪓</li>
-                        <li>📦 /kit vip – Set giáp + công cụ xịn</li>
-                        <li>🕊️ /fly – Bay thoải mái quanh khu của mình</li>
-                        <li>💬 Tag VIP nổi bật trong chat & tab</li>
-                    </ul>
-                    <button class="buy-btn" onclick="buyRank('VIP', '50.000đ')">Mua Ngay</button>
+              <div class="hero-highlights">
+                <div class="pill">
+                  <span class="pill-dot"></span>
+                  PvP ổn định, hit reg mượt
                 </div>
-
-                <!-- MVP Rank -->
-                <div class="rank-card mvp-card featured" data-rank="mvp">
-                    <div class="rank-badge mvp-badge">MVP</div>
-                    <div class="popular-tag">PHỔ BIẾN</div>
-                    <div class="rank-icon">💠</div>
-                    <h3 class="rank-name">MVP</h3>
-                    <p class="rank-price">100.000đ</p>
-                    <div class="boost-price">🚀 4 Booster</div>
-                    <ul class="rank-features">
-                        <li>⚡ Bao gồm toàn bộ quyền của VIP</li>
-                        <li>🏔️ Khu Mine MVP riêng (có nhiều block quý hơn)</li>
-                        <li>⚔️ /kit mvp – Đồ mạnh hơn, có hiệu ứng buff</li>
-                        <li>💚 /heal & /feed – Hồi máu và no đói nhanh</li>
-                        <li>✨ Danh hiệu MVP rực rỡ trong tab</li>
-                    </ul>
-                    <button class="buy-btn" onclick="buyRank('MVP', '100.000đ')">Mua Ngay</button>
+                <div class="pill">
+                  <span class="pill-dot"></span>
+                  Kit tùy chỉnh, luyện tập tự do
                 </div>
-
-                <!-- GOD Rank -->
-                <div class="rank-card god-card" data-rank="god">
-                    <div class="rank-badge god-badge">GOD</div>
-                    <div class="rank-icon">💥</div>
-                    <h3 class="rank-name">GOD</h3>
-                    <p class="rank-price">250.000đ</p>
-                    <div class="boost-price">⚡ 6 Booster</div>
-                    <ul class="rank-features">
-                        <li>🔥 Bao gồm quyền của MVP</li>
-                        <li>💎 Khu Mine GOD riêng (nhiều kim cương & emerald)</li>
-                        <li>⚔️ /kit god – Trang bị siêu cấp</li>
-                        <li>✏️ /nick – Đổi tên hiển thị</li>
-                        <li>✨ Hiệu ứng phát sáng + tag GOD quyền năng</li>
-                    </ul>
-                    <button class="buy-btn" onclick="buyRank('GOD', '250.000đ')">Mua Ngay</button>
+                <div class="pill">
+                  <span class="pill-dot"></span>
+                  Sự kiện, mini-event, giải đấu
                 </div>
-
-                <!-- KING Rank -->
-                <div class="rank-card king-card premium" data-rank="king">
-                    <div class="rank-badge king-badge">KING</div>
-                    <div class="popular-tag king-tag">VIP NHẤT</div>
-                    <div class="rank-icon">👑</div>
-                    <h3 class="rank-name">KING</h3>
-                    <p class="rank-price">300.000đ</p>
-                    <div class="boost-price">👑 8 Booster</div>
-                    <ul class="rank-features">
-                        <li>💫 Bao gồm quyền của GOD</li>
-                        <li>🏰 Khu Mine KING riêng (đặc biệt chỉ cho top rank)</li>
-                        <li>⚔️ /kit king – Đồ "full enchant" cực mạnh</li>
-                        <li>👻 /vanish – Ẩn danh hoàn toàn</li>
-                        <li>🔧 /repair all – Sửa tất cả đồ</li>
-                        <li>👑 Tag KING uy quyền tối thượng</li>
-                    </ul>
-                    <button class="buy-btn" onclick="buyRank('KING', '300.000đ')">Mua Ngay</button>
+                <div class="pill">
+                  <span class="pill-dot"></span>
+                  Hỗ trợ nhiều phiên bản, dễ vào
                 </div>
+              </div>
 
-                <!-- QUEEN Rank -->
-                <div class="rank-card queen-card special" data-rank="queen">
-                    <div class="rank-badge queen-badge">QUEEN</div>
-                    <div class="popular-tag queen-tag">DÀNH CHO NỮ</div>
-                    <div class="rank-icon">💖</div>
-                    <h3 class="rank-name">QUEEN</h3>
-                    <p class="rank-price">100.000đ</p>
-                    <div class="boost-price">🌸 4 Booster</div>
-                    <ul class="rank-features">
-                        <li>🌸 Khu Mine QUEEN riêng – thiết kế đẹp, dễ farm 💕</li>
-                        <li>👗 /kit queen – Set đồ riêng dành cho nữ</li>
-                        <li>🕊️ /fly, /heal, /feed đầy đủ</li>
-                        <li>💖 Hiệu ứng tim hồng + tag QUEEN</li>
-                    </ul>
-                    <button class="buy-btn" onclick="buyRank('QUEEN', '100.000đ')">Mua Ngay</button>
-                </div>
-            </div>
+              <div class="hero-actions">
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  <span class="btn-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M19.35 5.34C17.93 4.7 16.42 4.28 14.87 4.09C14.69 4.41 14.53 4.75 14.4 5.09C12.79 4.85 11.18 4.85 9.57 5.09C9.44 4.75 9.28 4.41 9.1 4.09C7.55 4.28 6.04 4.7 4.62 5.34C2.56 8.41 2.04 11.4 2.29 14.35C3.9 15.54 5.64 16.44 7.47 17.02C7.84 16.52 8.17 15.99 8.46 15.43C7.89 15.21 7.35 14.93 6.84 14.6C6.97 14.5 7.09 14.39 7.21 14.28C9.45 15.36 11.86 15.78 14.26 15.52C14.31 15.53 14.36 15.52 14.41 15.52C14.72 16.07 15.07 16.59 15.45 17.08C17.28 16.5 19.02 15.6 20.63 14.41C20.91 11.26 20.16 8.3 19.35 5.34Z"
+                        fill="#5865F2"></path>
+                    </svg>
+                  </span>
+                  Tham gia Discord
+                </a>
 
-            <!-- Booster Info -->
-            <div class="boost-info">
-                <h3>📢 Giá Thị Trường Booster</h3>
-                <p>Vì server cần booster, bạn có thể mua rank bằng Discord Booster:</p>
-                <div class="boost-list">
-                    <div class="boost-item">2 Booster = VIP</div>
-                    <div class="boost-item">4 Booster = MVP</div>
-                    <div class="boost-item">6 Booster = GOD</div>
-                    <div class="boost-item">8 Booster = KING</div>
-                    <div class="boost-item">10+ Booster = Thương lượng</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Helper Application -->
-    <section id="helper" class="helper-section">
-        <div class="container">
-            <h2 class="section-title">🛡️ ĐIỀU KIỆN HELPER</h2>
-            <p class="section-subtitle">Gia nhập đội ngũ staff của chúng tôi</p>
-
-            <div class="helper-card">
-                <div class="helper-icon">🛡️</div>
-                <h3>Đăng Ký Vị Trí HELPER</h3>
-
-                <div class="helper-form-guide">
-                    <div class="form-item">
-                        <strong>Tên:</strong>
-                        <p>Ví dụ: Em Tên Là Nguyễn Phú Vinh</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Tuổi:</strong>
-                        <p>Ví dụ: Em 2k10 hoặc là 2010</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Ingame:</strong>
-                        <p>Ví dụ: BummLove</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Team ai:</strong>
-                        <p>Ví dụ: Team của Nguyễn Phú Vinh</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Thời gian chơi game:</strong>
-                        <p>Ví dụ: 6h/day hoặc 2h/d</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Biết làm gì cho server:</strong>
-                        <p>Ví dụ: Đóng góp cho server phát triển hơn nữa</p>
-                    </div>
-
-                    <div class="form-item">
-                        <strong>Mục đích:</strong>
-                        <p>Ví dụ: Đến vì cảm thấy mình có ích</p>
-                    </div>
-                </div>
-
-                <div class="helper-benefits">
-                    <h4>Quyền lợi HELPER:</h4>
-                    <ul>
-                        <li>🛡️ Moderate chat</li>
-                        <li>💬 Help members</li>
-                        <li>⚙️ Basic commands</li>
-                        <li>👥 Staff chat access</li>
-                    </ul>
-                </div>
-
-                <button class="apply-btn" onclick="applyHelper()">
-                    Liên Hệ @trandangkhoavn Để Khảo Sát
+                <button class="btn btn-ghost" data-section-switch="store">
+                  Mở Store Rank
                 </button>
+              </div>
             </div>
-        </div>
-    </section>
+          </div>
 
-    <!-- Rules Section -->
-    <section id="rules" class="rules-section">
-        <div class="container">
-            <h2 class="section-title">📜 NỘI QUY BOXPVPMC & DISCORD</h2>
-
-            <div class="rules-grid">
-                <div class="rule-card">
-                    <div class="rule-number">1</div>
-                    <h3>🚫 Cấm Mod</h3>
-                    <p>Cấm sử dụng các loại mod như: Minimap, Freecam, Click Crystal, Autototem, Swing và các mod tương tự từ server khác.</p>
+          <div class="panel">
+            <div class="panel-inner">
+              <div class="info-grid">
+                <div class="info-card">
+                  <div class="info-card-label">Địa chỉ máy chủ</div>
+                  <div class="info-card-main">IP: BoxPvPMC.Fun</div>
+                  <div class="info-card-sub">Hỗ trợ nhiều phiên bản Java</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">2</div>
-                    <h3>🤝 Tôn Trọng</h3>
-                    <p>Tôn trọng Staff, cấm toxic, cấm phân biệt đối xử và tuân thủ các quy tắc khác của server.</p>
+                <div class="info-card">
+                  <div class="info-card-label">Chế độ chính</div>
+                  <div class="info-card-main">PvP • Practice • Minigames</div>
+                  <div class="info-card-sub">Tập trung vào combat mượt, fair</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">3</div>
-                    <h3>💳 Nạp Rank</h3>
-                    <p>Ai muốn nạp rank thì liên hệ: @trandangkhoavn để được hỗ trợ thanh toán.</p>
+                <div class="info-card">
+                  <div class="info-card-label">Trải nghiệm</div>
+                  <div class="info-card-main">Hit reg mượt, không delay</div>
+                  <div class="info-card-sub">Tối ưu hiệu suất cho PvP tryhard</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">4</div>
-                    <h3>🎮 Cấm Cheat</h3>
-                    <p>Cấm sử dụng Cheat và Mod (như đã nêu ở luật số 1). Vi phạm sẽ bị ban vĩnh viễn.</p>
+                <div class="info-card">
+                  <div class="info-card-label">Box & Kit</div>
+                  <div class="info-card-main">Tùy chỉnh độc quyền</div>
+                  <div class="info-card-sub">Nhiều kit cân bằng để luyện tập</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">5</div>
-                    <h3>🔒 Cấm Bug/Dupe</h3>
-                    <p>Cấm bug, dupe vật phẩm. Nghiêm cấm scam đồ trong server.</p>
+                <div class="info-card">
+                  <div class="info-card-label">Cộng đồng</div>
+                  <div class="info-card-main">Thân thiện, hoạt động liên tục</div>
+                  <div class="info-card-sub">Mini-event, giải đấu nhỏ thường xuyên</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">6</div>
-                    <h3>🔞 Nội Dung</h3>
-                    <p>Cấm gửi hình ảnh 18+, nội dung không phù hợp với cộng đồng.</p>
+                <div class="info-card">
+                  <div class="info-card-label">Ghi chú</div>
+                  <div class="info-card-main">BoxPvPMC.FUN • 23/10/2025</div>
+                  <div class="info-card-sub">Luôn được cập nhật và tinh chỉnh</div>
+                  <div class="info-card-accent"></div>
                 </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">7</div>
-                    <h3>📋 Back Đồ</h3>
-                    <p>Muốn back đồ, hãy gửi log kèm replay khi chết để staff xem xét.</p>
-                </div>
-
-                <div class="rule-card">
-                    <div class="rule-number">8</div>
-                    <h3>⚠️ Lỗi PB</h3>
-                    <p>Ai chơi PB mà lạm dụng lỗi vô web, bay, xuyên tường sẽ bị ban.</p>
-                </div>
-
-                <div class="rule-card important">
-                    <div class="rule-number">⚠️</div>
-                    <h3>👑 Staff Rules</h3>
-                    <p>Role có quyền mute, ban, kick, timeout: Cấm vô ý thức, mất trật tự, spam bot không đúng chỗ.</p>
-                    <p><strong>Warning 10 lần = Demote role.</strong></p>
-                    <p>Muốn mute/timeout ai đó phải có bằng chứng hoặc video.</p>
-                </div>
-
-                <div class="rule-card critical">
-                    <div class="rule-number">✅</div>
-                    <h3>🔴 QUAN TRỌNG NHẤT</h3>
-                    <p><strong>CẤM LỢI DỤNG QUYỀN BAN NGƯỜI KHÁC!</strong></p>
-                    <p>Vi phạm sẽ bị xử lý nghiêm khắc.</p>
-                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </section>
 
-    <!-- Discord CTA -->
-    <section id="discord" class="discord-section">
-        <div class="container">
-            <h2 class="section-title">Tham Gia Cộng Đồng</h2>
-            <p class="discord-text">Join Discord server để nhận hỗ trợ, mua rank và cập nhật mới nhất!</p>
-            <a href="https://discord.gg/BoxPvPMC" target="_blank" class="discord-btn-large">
-                <span class="discord-icon-large">💬</span>
-                <span>Join Discord: discord.gg/BoxPvPMC</span>
+        <!-- RULES -->
+        <div class="panel" style="margin-top:18px;">
+          <div class="panel-inner">
+            <div class="tagline">Rules BoxPvPMC & Discord</div>
+            <p class="hero-sub">
+              Để giữ môi trường chơi công bằng và vui vẻ, vui lòng đọc kỹ và tuân thủ toàn bộ
+              nội quy dưới đây. Vi phạm nặng hoặc cố ý có thể bị cấm vĩnh viễn cả server lẫn Discord.
+            </p>
+            <ul class="rules-list">
+              <li>Cấm sử dụng các mod bị cấm như minimap, freecam, click crystal, autototem, swing through và các mod tạo lợi thế tương tự.</li>
+              <li>Tôn trọng staff và mọi người chơi khác. Cấm toxic, phân biệt, xúc phạm cá nhân hoặc cộng đồng.</li>
+              <li>Cấm hoàn toàn cheat, hack, client bất thường, cũng như mọi hình thức dupe đồ, bug, exploit hệ thống.</li>
+              <li>Cấm gửi, chia sẻ hình ảnh hoặc nội dung 18+ trong mọi kênh của server và Discord.</li>
+              <li>Nếu muốn hoàn đồ (back đồ), hãy chuẩn bị log và replay lúc chết để staff có thể kiểm tra.</li>
+              <li>Nạp rank vui lòng liên hệ đúng người: IB @BackSpace, tránh fake staff.</li>
+              <li>Điều quan trọng nhất: tuyệt đối cấm abuse mọi quyền hạn được cấp.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- STORE -->
+      <section id="store" class="section">
+        <div class="panel">
+          <div class="panel-inner">
+            <div class="store-header">
+              <div class="tagline">BoxPvPMC Rank Market</div>
+              <h2 class="store-title">Mua rank để nhận khu mine riêng, kit siêu VIP và quyền lực đặc biệt</h2>
+              <p class="store-sub">
+                Tất cả giao dịch rank đều xử lý qua Discord. Khi bấm nút mua, bạn sẽ được chuyển
+                sang Discord để bot hoặc staff hỗ trợ. Bên dưới là mô tả nhanh, anh có thể chỉnh
+                lại nội dung / giá nếu cần.
+              </p>
+            </div>
+
+            <div class="rank-grid">
+              <!-- VIP -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Rank trả phí
+                </div>
+                <div class="rank-name">VIP</div>
+                <div class="rank-price">50.000đ</div>
+                <ul class="rank-list">
+                  <li>Khu Mine VIP riêng với tài nguyên nhiều hơn người chơi thường.</li>
+                  <li>Lệnh /kit vip với set giáp và công cụ xịn.</li>
+                  <li>/fly để bay thoải mái quanh khu của mình.</li>
+                  <li>Tag VIP nổi bật trong chat và tab.</li>
+                </ul>
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Mua VIP qua Discord
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+
+              <!-- MVP -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Rank nâng cao
+                </div>
+                <div class="rank-name">MVP</div>
+                <div class="rank-price">100.000đ</div>
+                <ul class="rank-list">
+                  <li>Toàn bộ quyền của VIP.</li>
+                  <li>Khu Mine MVP riêng với nhiều block quý hơn.</li>
+                  <li>/kit mvp với trang bị mạnh hơn, có hiệu ứng buff.</li>
+                  <li>/heal và /feed để hồi máu và no đói nhanh.</li>
+                  <li>Danh hiệu MVP rực rỡ trong tab.</li>
+                </ul>
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Mua MVP qua Discord
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+
+              <!-- GOD -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Rank quyền năng
+                </div>
+                <div class="rank-name">GOD</div>
+                <div class="rank-price">250.000đ</div>
+                <ul class="rank-list">
+                  <li>Toàn bộ quyền của MVP.</li>
+                  <li>Khu Mine GOD riêng với rất nhiều kim cương và emerald.</li>
+                  <li>/kit god với trang bị siêu cấp.</li>
+                  <li>/nick để đổi tên hiển thị.</li>
+                  <li>Hiệu ứng phát sáng và tag GOD quyền năng.</li>
+                </ul>
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Mua GOD qua Discord
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+
+              <!-- KING -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Top rank
+                </div>
+                <div class="rank-name">KING</div>
+                <div class="rank-price">300.000đ</div>
+                <ul class="rank-list">
+                  <li>Toàn bộ quyền của GOD.</li>
+                  <li>Khu Mine KING riêng, chỉ dành cho top rank.</li>
+                  <li>/kit king với đồ full enchant cực mạnh.</li>
+                  <li>/vanish để ẩn danh hoàn toàn.</li>
+                  <li>/repair all sửa toàn bộ đồ trong túi.</li>
+                  <li>Tag KING uy quyền tối thượng.</li>
+                </ul>
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Mua KING qua Discord
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+
+              <!-- QUEEN -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Rank dành cho nữ
+                </div>
+                <div class="rank-name">QUEEN</div>
+                <div class="rank-price">100.000đ</div>
+                <ul class="rank-list">
+                  <li>Khu Mine QUEEN riêng, thiết kế đẹp và dễ farm.</li>
+                  <li>/kit queen với set đồ riêng cho nữ.</li>
+                  <li>Đầy đủ /fly, /heal, /feed.</li>
+                  <li>Hiệu ứng tim hồng và tag QUEEN nổi bật.</li>
+                </ul>
+                <a class="btn btn-primary"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Mua QUEEN qua Discord
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+
+              <!-- BOOSTER -->
+              <article class="rank-card">
+                <div class="rank-badge">
+                  <span class="pill-dot"></span>
+                  Rank qua Nitro Boost
+                </div>
+                <div class="rank-name">BOOSTER</div>
+                <div class="rank-price">Đổi rank theo số boost</div>
+                <ul class="rank-list">
+                  <li>2 booster = rank VIP.</li>
+                  <li>4 booster = rank MVP.</li>
+                  <li>6 booster = rank GOD.</li>
+                  <li>8 booster = rank KING.</li>
+                  <li>10 booster = rank Custom đặc biệt.</li>
+                  <li>Giá boost quy đổi sát với giá tiền, liên hệ staff để được tư vấn.</li>
+                </ul>
+                <a class="btn btn-ghost"
+                   href="https://discord.gg/hFCF3FEak9"
+                   target="_blank" rel="noopener">
+                  Đổi rank bằng Nitro Boost
+                </a>
+                <div class="rank-accent-strip"></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISCORD -->
+      <section id="discord" class="section">
+        <div class="discord-panel">
+          <div class="discord-block">
+            <div class="tagline">Cộng đồng BoxPvPMC</div>
+            <h2 class="discord-title">Discord Server BoxPvPMC</h2>
+            <p class="discord-text">
+              Tất cả update, thông báo, event, hỗ trợ, mua rank và đăng ký Media / Media+
+              đều xử lý tập trung trên Discord. Đây là nơi tụ tập của cộng đồng tryhard PvP,
+              chia sẻ clip, highlight và góp ý cho server.
+            </p>
+            <p class="discord-text">
+              Tham gia Discord để không bỏ lỡ mini-event, giải đấu nhỏ, giveaway
+              hoặc những lần mở chế độ chơi mới. Mọi góp ý từ bạn đều được ghi nhận
+              và chuyển thành cải tiến cụ thể trong server.
+            </p>
+
+            <div class="discord-tag-row">
+              <div class="discord-stat">
+                <span class="discord-status-dot"></span>
+                Server online 24/7
+              </div>
+              <div class="discord-stat">
+                Thông báo cập nhật, patch PvP, event
+              </div>
+              <div class="discord-stat">
+                Kênh góp ý, báo lỗi, hỗ trợ nhanh
+              </div>
+            </div>
+
+            <a class="btn btn-primary"
+               href="https://discord.gg/hFCF3FEak9"
+               target="_blank" rel="noopener">
+              Tham gia Discord ngay
             </a>
-            <div class="contact-info">
-                <p>💬 Liên hệ hỗ trợ: <strong>@trandangkhoavn</strong></p>
+          </div>
+
+          <div class="discord-block">
+            <div class="discord-preview">
+              <div class="discord-preview-header">
+                <div class="discord-server-name">BoxPvPMC • Official Discord</div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="tag">PvP • Practice • Minigames</span>
+                  <span class="discord-status-dot"></span>
+                </div>
+              </div>
+              <div class="discord-preview-body">
+                Khung preview này có thể thay bằng widget Discord chính thức hoặc ảnh embed
+                của anh. Hiện tại là placeholder mô phỏng để giữ bố cục gọn và đúng chủ đề.
+              </div>
             </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 BoxPvPMC Network. All rights reserved.</p>
-            <p>Made with 💚 for the community</p>
+      <!-- PARTNER -->
+      <section id="partner" class="section">
+        <div class="panel">
+          <div class="panel-inner">
+            <div class="tagline">Đối tác & bạn đồng hành</div>
+            <h2 class="store-title">Partner của BoxPvPMC</h2>
+            <p class="store-sub">
+              Khu vực giới thiệu các đối tác, cộng đồng hoặc creator đồng hành cùng BoxPvPMC.
+              Mỗi partner có avatar Discord riêng và nút tham gia trực tiếp, anh có thể thêm / xóa
+              card tùy ý.
+            </p>
+
+            <div class="partner-grid">
+              <!-- Partner mẫu: chính BoxPvPMC -->
+              <article class="partner-card">
+                <img class="partner-avatar"
+                     src="https://cdn.discordapp.com/icons/YOUR_GUILD_ID/YOUR_ICON_HASH.png"
+                     alt="BoxPvPMC Discord Icon">
+                <div style="flex:1;">
+                  <div class="partner-main-title">BoxPvPMC • Official Discord</div>
+                  <div class="partner-sub">
+                    Máy chủ chính, nơi diễn ra toàn bộ thông báo, event và hỗ trợ.
+                  </div>
+                  <a class="btn btn-ghost"
+                     href="https://discord.gg/hFCF3FEak9"
+                     target="_blank" rel="noopener">
+                    Tham gia BoxPvPMC Discord
+                  </a>
+                </div>
+              </article>
+
+              <!-- Partner mẫu khác, có thể chỉnh sửa -->
+              <article class="partner-card">
+                <img class="partner-avatar"
+                     src="https://cdn.discordapp.com/icons/000000000000000000/placeholder.png"
+                     alt="Creator / Media">
+                <div style="flex:1;">
+                  <div class="partner-main-title">Creator / Media Partner</div>
+                  <div class="partner-sub">
+                    Kênh YouTube, TikTok hoặc cộng đồng hỗ trợ quảng bá server.
+                  </div>
+                  <a class="btn btn-ghost"
+                     href="https://discord.gg/hFCF3FEak9"
+                     target="_blank" rel="noopener">
+                    Liên hệ hợp tác qua Discord
+                  </a>
+                </div>
+              </article>
+
+              <!-- Partner mẫu thêm -->
+              <article class="partner-card">
+                <img class="partner-avatar"
+                     src="https://cdn.discordapp.com/icons/000000000000000000/placeholder2.png"
+                     alt="Partner khác">
+                <div style="flex:1;">
+                  <div class="partner-main-title">Cộng đồng PvP khác</div>
+                  <div class="partner-sub">
+                    Slot để thêm partner server hoặc cộng đồng mà anh muốn liên kết.
+                  </div>
+                  <a class="btn btn-ghost"
+                     href="https://discord.gg/hFCF3FEak9"
+                     target="_blank" rel="noopener">
+                    Thảo luận partner trên Discord
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <!-- ONLINE -->
+      <section id="online" class="section">
+        <div class="online-wrapper">
+          <div class="panel">
+            <div class="panel-inner">
+              <div class="tagline">Trạng thái máy chủ</div>
+              <h2 class="online-main-title">Online • Thông tin realtime</h2>
+              <p class="online-sub">
+                Khu vực này dùng để hiển thị số người đang online trên Discord, tổng số thành viên
+                và các thông tin realtime khác. Dữ liệu lấy từ Discord widget / API nên chỉ cần
+                bật widget trong Server Settings và điền đúng Guild ID.[web:21][web:23][web:34]
+              </p>
+
+              <div class="online-placeholder">
+                Khu vực này anh có thể mở rộng thêm:
+                <br>- Gắn API check online / ping của Minecraft server.
+                <br>- Hiển thị TPS, map hoặc chế độ đang mở.
+                <br>- Thêm biểu đồ người chơi theo thời gian.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-inner">
+              <div class="online-stat-grid">
+                <div class="online-stat-card">
+                  <div class="info-card-label">Người online trên Discord</div>
+                  <div class="info-card-main">
+                    <span id="discordOnlineCount">--</span> người
+                  </div>
+                  <div class="info-card-sub">Lấy từ Discord widget, cập nhật định kỳ.</div>
+                </div>
+                <div class="online-stat-card">
+                  <div class="info-card-label">Tổng thành viên Discord</div>
+                  <div class="info-card-main">
+                    <span id="discordMemberCount">--</span> thành viên
+                  </div>
+                  <div class="info-card-sub">Giá trị xấp xỉ, có thể giới hạn bởi widget.</div>
+                </div>
+                <div class="online-stat-card">
+                  <div class="info-card-label">IP máy chủ</div>
+                  <div class="info-card-main">BoxPvPMC.Fun</div>
+                  <div class="info-card-sub">Thêm port nếu anh cấu hình riêng.</div>
+                </div>
+                <div class="online-stat-card">
+                  <div class="info-card-label">Loại server</div>
+                  <div class="info-card-main">PvP • Practice • Minigames</div>
+                  <div class="info-card-sub">Tối ưu cho combat tryhard.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-left">
+        <span>© 2025 BoxPvP Minecraft Server. All rights reserved.</span>
+      </div>
+      <div class="footer-right">
+        <span>Made with&nbsp;<span class="footer-strong">BoxPvP Team</span></span>
+        <span>|</span>
+        <span>Dev By <span class="footer-strong">@Tuanne</span></span>
+      </div>
     </footer>
+  </div>
 
-    <script src="main.js"></script>
+  <!-- FEEDBACK FLOAT WIDGET -->
+  <div class="feedback-widget" id="feedbackWidget">
+    <button class="feedback-toggle" id="feedbackToggle">
+      <div>
+        <div class="feedback-label">Góp ý</div>
+        <div class="feedback-main">Mở form góp ý</div>
+      </div>
+    </button>
+    <form id="feedbackForm" class="feedback-form">
+      <input class="feedback-input" type="text" name="name" placeholder="Tên (tuỳ chọn)">
+      <input class="feedback-input" type="text" name="contact" placeholder="Liên hệ: Discord / Facebook (tuỳ chọn)">
+      <textarea class="feedback-textarea" name="message" placeholder="Nội dung góp ý..." required></textarea>
+      <!-- Honeypot chống bot -->
+      <input class="feedback-trap" type="text" name="feedback_trap" autocomplete="off">
+      <button class="btn btn-primary" type="submit">Gửi góp ý</button>
+      <div class="feedback-status" id="feedbackStatus"></div>
+    </form>
+  </div>
+
+  <!-- DISCORD FLOAT BUTTON -->
+  <a class="discord-float"
+     href="https://discord.gg/hFCF3FEak9"
+     target="_blank" rel="noopener">
+    <span class="btn-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M19.35 5.34C17.93 4.7 16.42 4.28 14.87 4.09C14.69 4.41 14.53 4.75 14.4 5.09C12.79 4.85 11.18 4.85 9.57 5.09C9.44 4.75 9.28 4.41 9.1 4.09C7.55 4.28 6.04 4.7 4.62 5.34C2.56 8.41 2.04 11.4 2.29 14.35C3.9 15.54 5.64 16.44 7.47 17.02C7.84 16.52 8.17 15.99 8.46 15.43C7.89 15.21 7.35 14.93 6.84 14.6C6.97 14.5 7.09 14.39 7.21 14.28C9.45 15.36 11.86 15.78 14.26 15.52C14.31 15.53 14.36 15.52 14.41 15.52C14.72 16.07 15.07 16.59 15.45 17.08C17.28 16.5 19.02 15.6 20.63 14.41C20.91 11.26 20.16 8.3 19.35 5.34Z"
+          fill="#5865F2"></path>
+      </svg>
+    </span>
+    <span>Join Discord</span>
+  </a>
+
+  <script>
+    /* ========= CONFIG ========= */
+    const FEEDBACK_WEBHOOK_URL = ""; // Webhook góp ý (điền URL Discord webhook)
+    const VISITOR_LOG_WEBHOOK_URL = ""; // Webhook log khách truy cập
+    const DISCORD_GUILD_ID = ""; // Guild ID của server để lấy widget JSON
+
+    /* Ẩn preloader và log visitor */
+    window.addEventListener("load", function () {
+      const pre = document.getElementById("preloader");
+      if (pre) {
+        pre.style.opacity = "0";
+        pre.style.transition = "opacity 260ms ease-out";
+        setTimeout(() => pre.remove(), 280);
+      }
+      sendVisitorLog();
+      fetchDiscordStats();
+      setInterval(fetchDiscordStats, 60000);
+    });
+
+    /* Nav section switch */
+    const navLinks = document.querySelectorAll(".nav-link");
+    const sections = document.querySelectorAll(".section");
+
+    function activateSection(id) {
+      sections.forEach(sec => {
+        sec.classList.toggle("active", sec.id === id);
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle("active", link.dataset.section === id);
+      });
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        const id = link.dataset.section;
+        if (id) activateSection(id);
+      });
+    });
+
+    document.querySelectorAll("[data-section-switch]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-section-switch");
+        if (id) activateSection(id);
+      });
+    });
+
+    const logoHome = document.getElementById("logoHome");
+    if (logoHome) {
+      logoHome.addEventListener("click", () => activateSection("server-info"));
+    }
+
+    /* Theme toggle */
+    const themeToggle = document.getElementById("themeToggle");
+    const root = document.documentElement;
+
+    function setTheme(mode) {
+      root.setAttribute("data-theme", mode);
+      try {
+        localStorage.setItem("boxpvp-theme", mode);
+      } catch (e) {}
+    }
+
+    function initTheme() {
+      let saved = null;
+      try {
+        saved = localStorage.getItem("boxpvp-theme");
+      } catch (e) {}
+      if (saved === "light" || saved === "dark") {
+        setTheme(saved);
+      } else {
+        setTheme("dark");
+      }
+    }
+
+    initTheme();
+
+    themeToggle.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || "dark";
+      setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    /* Feedback form -> Discord webhook (có chống spam cơ bản) */
+    const feedbackToggle = document.getElementById("feedbackToggle");
+    const feedbackForm = document.getElementById("feedbackForm");
+    const feedbackStatus = document.getElementById("feedbackStatus");
+    let lastFeedbackTime = 0;
+
+    if (feedbackToggle && feedbackForm) {
+      feedbackToggle.addEventListener("click", () => {
+        feedbackForm.classList.toggle("open");
+      });
+
+      feedbackForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!FEEDBACK_WEBHOOK_URL) {
+          feedbackStatus.textContent = "Chưa cấu hình webhook góp ý.";
+          return;
+        }
+        const now = Date.now();
+        const COOLDOWN = 15000; // 15s
+        if (now - lastFeedbackTime < COOLDOWN) {
+          feedbackStatus.textContent = "Bạn gửi quá nhanh, vui lòng thử lại sau vài giây.";
+          return;
+        }
+
+        const formData = new FormData(feedbackForm);
+        const trap = formData.get("feedback_trap");
+        if (trap) {
+          // bot/honeypot -> bỏ qua
+          return;
+        }
+
+        const name = (formData.get("name") || "").toString().trim().slice(0, 64);
+        const contact = (formData.get("contact") || "").toString().trim().slice(0, 128);
+        const message = (formData.get("message") || "").toString().trim();
+
+        if (message.length < 10) {
+          feedbackStatus.textContent = "Nội dung góp ý quá ngắn.";
+          return;
+        }
+        if (message.length > 1000) {
+          feedbackStatus.textContent = "Nội dung góp ý quá dài, vui lòng rút gọn.";
+          return;
+        }
+
+        feedbackStatus.textContent = "Đang gửi góp ý...";
+        lastFeedbackTime = now;
+
+        const embed = {
+          title: "Góp ý mới từ website BoxPvPMC",
+          description: message,
+          color: 0x46d96f,
+          fields: [
+            { name: "Người gửi", value: name || "Ẩn danh", inline: true },
+            { name: "Liên hệ", value: contact || "Không cung cấp", inline: true }
+          ],
+          timestamp: new Date().toISOString()
+        };
+
+        try {
+          await fetch(FEEDBACK_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: "BoxPvPMC Feedback",
+              embeds: [embed],
+              allowed_mentions: { parse: [] }
+            })
+          });
+          feedbackStatus.textContent = "Đã gửi góp ý. Cảm ơn bạn đã đóng góp.";
+          feedbackForm.reset();
+        } catch (err) {
+          feedbackStatus.textContent = "Gửi thất bại. Vui lòng thử lại sau.";
+        }
+      });
+    }
+
+    /* Visitor log qua webhook */
+    async function sendVisitorLog() {
+      if (!VISITOR_LOG_WEBHOOK_URL) return;
+      try {
+        const ua = navigator.userAgent || "unknown";
+        const lang = navigator.language || "unknown";
+        const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "unknown";
+
+        const embed = {
+          title: "Visitor mới vào website BoxPvPMC",
+          color: 0x46b6ff,
+          fields: [
+            { name: "User-Agent", value: ua.slice(0, 256), inline: false },
+            { name: "Ngôn ngữ", value: lang, inline: true },
+            { name: "Time zone", value: tz, inline: true }
+          ],
+          timestamp: new Date().toISOString()
+        };
+
+        await fetch(VISITOR_LOG_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "BoxPvPMC Web Log",
+            embeds: [embed],
+            allowed_mentions: { parse: [] }
+          })
+        });
+      } catch (e) {
+        // im lặng, tránh crash
+      }
+    }
+
+    /* Discord online + member count từ widget JSON */
+    async function fetchDiscordStats() {
+      if (!DISCORD_GUILD_ID) return;
+      const url = `https://discord.com/api/guilds/${DISCORD_GUILD_ID}/widget.json`;
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const onlineEl = document.getElementById("discordOnlineCount");
+        const memberEl = document.getElementById("discordMemberCount");
+
+        if (onlineEl && typeof data.presence_count === "number") {
+          onlineEl.textContent = data.presence_count.toString();
+        }
+        if (memberEl) {
+          // Widget có mảng members (tối đa 100) nên số này chỉ mang tính tham khảo.
+          const approx = Array.isArray(data.members) ? data.members.length : null;
+          memberEl.textContent = approx !== null ? approx.toString() : "Không rõ";
+        }
+      } catch (e) {
+        // im lặng
+      }
+    }
+  </script>
 </body>
 </html>
